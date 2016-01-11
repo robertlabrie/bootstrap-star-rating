@@ -1,7 +1,7 @@
 (function ( $ ) {
  
     $.fn.rating = function( method, options ) {
-
+		method = method || 'create';
         // This is the easiest way to have default options.
         var settings = $.extend({
             // These are the defaults.
@@ -12,6 +12,7 @@
 			coloron: "gold",
 			size: "2.0em",
 			cursor: "default",
+			onClick: function () {},
             endofarray: "idontmatter"
         }, options );
 		var style = "";
@@ -19,15 +20,8 @@
 		style = style + "color:" + settings.coloroff + "; ";
 		style = style + "cursor:" + settings.cursor + "; ";
 	
+
 		
-        // Greenify the collection based on the settings variable.
-		/*
-        return this.css({
-            color: settings.color,
-            backgroundColor: settings.backgroundColor
-        });
-		*/
-		console.log(method);
 		if (method == 'create')
 		{
 			//this.html('');	//junk whatever was there
@@ -35,7 +29,7 @@
 			//initialize the data-rating property
 			this.each(function(){
 				attr = $(this).attr('data-rating');
-				if (attr === undefined || attr === false) { $(this).attr('data-rating',0); }
+				if (attr === undefined || attr === false) { $(this).attr('data-rating',settings.value); }
 			})
 			
 			//bolt in the glyphs
@@ -50,33 +44,33 @@
 		}
 		if (method == 'set')
 		{
-			
+			this.attr('data-rating',options);
+			this.each(function() { paint($(this)); });
 		}
 		if (method == 'get')
 		{
 			return this.attr('data-rating');
 		}
+		//register the click events
 		this.find("span.ratingicon").click(function() {
 			rating = $(this).attr('data-value')
 			$(this).parent().attr('data-rating',rating);
 			paint($(this).parent());
+			settings.onClick.call( $(this).parent() );
 		})
 		function paint(div)
 		{
-			rating = div.attr('data-rating');
+			rating = parseInt(div.attr('data-rating'));
 			div.find("input").val(rating);	//if there is an input in the div lets set it's value
 			div.find("span.ratingicon").each(function(){	//now paint the stars
 				
-				var rating = $(this).parent().attr('data-rating');
-				var value = $(this).attr('data-value');
+				var rating = parseInt($(this).parent().attr('data-rating'));
+				var value = parseInt($(this).attr('data-value'));
 				if (value > rating) { $(this).css('color',settings.coloroff); }
 				else { $(this).css('color',settings.coloron); }
 			})
 		}
-		function stars(obj)
-		{
-			console.log('do the stars')
-		}
+
     };
  
 }( jQuery ));
