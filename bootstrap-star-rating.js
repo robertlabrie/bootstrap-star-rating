@@ -10,8 +10,8 @@
             glyph: "glyphicon-star",
             coloroff: "gray",
             coloron: "gold",
-            size: "2.0em",
-            cursor: "default",
+            size: "1.3em",
+            cursor: "pointer",
             onClick: function () {
             },
             endofarray: "idontmatter"
@@ -45,7 +45,11 @@
                     $(ratingIcons[i]).css('color', settings.coloron);
                 }
             }).mouseout(function () {
-                $('.ratingicon').css('color', settings.coloroff);
+                var currentRate = $(this).parent().attr('data-rating');
+                var ratingIcons = $('.ratingicon');
+                for (var i = ratingIcons.length; i >= currentRate; i--) {
+                    $(ratingIcons[i]).css('color', settings.coloroff);
+                }
             });
 
             //paint
@@ -85,7 +89,5 @@
                 }
             })
         }
-
     };
-
 }(jQuery));
